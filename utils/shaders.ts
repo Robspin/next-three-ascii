@@ -1,3 +1,4 @@
+"use client"
 import { CanvasTexture, Color, NearestFilter, RepeatWrapping, Texture, Uniform } from 'three';
 import { Effect } from 'postprocessing';
 import * as THREE from 'three';
@@ -78,7 +79,7 @@ export class ASCIIEffect extends Effect {
 
     /** Draws the characters on a Canvas and returns a texture */
     public createCharactersTexture(characters: string, fontSize: number): THREE.Texture {
-        const canvas = document?.createElement('canvas');
+        const canvas = document.createElement('canvas');
 
         const SIZE = 1024;
         const MAX_PER_ROW = 16;
