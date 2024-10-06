@@ -2,10 +2,11 @@
 import React, { Suspense } from 'react'
 import { Canvas } from '@react-three/fiber'
 import { EffectComposer } from '@react-three/postprocessing'
-import { ASCIIEffect } from '@/utils/shaders'
 import { OrbitControls } from '@react-three/drei'
 import { useControls } from 'leva'
 import { Labrador } from '@/components/models/labrador'
+import { ASCIIEffect } from '@/utils/shaders'
+
 
 export default function Page() {
     const { asciiEffectEnabled, autoRotate, lightIntensity, cellSize } = useControls({

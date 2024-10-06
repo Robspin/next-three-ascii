@@ -79,45 +79,48 @@ export class ASCIIEffect extends Effect {
 
     /** Draws the characters on a Canvas and returns a texture */
     public createCharactersTexture(characters: string, fontSize: number): THREE.Texture {
-        const canvas = document.createElement('canvas');
+        return typeof window !== 'undefined'
+            ? (() => {
+                const canvas = document.createElement('canvas');
+                const SIZE = 1024;
+                const MAX_PER_ROW = 16;
+                const CELL = SIZE / MAX_PER_ROW;
 
-        const SIZE = 1024;
-        const MAX_PER_ROW = 16;
-        const CELL = SIZE / MAX_PER_ROW;
+                canvas.width = canvas.height = SIZE;
 
-        canvas.width = canvas.height = SIZE;
+                const texture = new CanvasTexture(
+                    canvas,
+                    undefined,
+                    RepeatWrapping,
+                    RepeatWrapping,
+                    NearestFilter,
+                    NearestFilter
+                );
 
-        const texture = new CanvasTexture(
-            canvas,
-            undefined,
-            RepeatWrapping,
-            RepeatWrapping,
-            NearestFilter,
-            NearestFilter
-        );
+                const context = canvas.getContext('2d');
 
-        const context = canvas.getContext('2d');
+                if (!context) {
+                    throw new Error('Context not available');
+                }
 
-        if (!context) {
-            throw new Error('Context not available');
-        }
+                context.clearRect(0, 0, SIZE, SIZE);
+                context.font = `${fontSize}px arial`;
+                context.textAlign = 'center';
+                context.textBaseline = 'middle';
+                context.fillStyle = '#fff';
 
-        context.clearRect(0, 0, SIZE, SIZE);
-        context.font = `${fontSize}px arial`;
-        context.textAlign = 'center';
-        context.textBaseline = 'middle';
-        context.fillStyle = '#fff';
+                for (let i = 0; i < characters.length; i++) {
+                    const char = characters[i];
+                    const x = i % MAX_PER_ROW;
+                    const y = Math.floor(i / MAX_PER_ROW);
 
-        for (let i = 0; i < characters.length; i++) {
-            const char = characters[i];
-            const x = i % MAX_PER_ROW;
-            const y = Math.floor(i / MAX_PER_ROW);
+                    context.fillText(char, x * CELL + CELL / 2, y * CELL + CELL / 2);
+                }
 
-            context.fillText(char, x * CELL + CELL / 2, y * CELL + CELL / 2);
-        }
+                texture.needsUpdate = true;
 
-        texture.needsUpdate = true;
-
-        return texture;
+                return texture;
+            })()
+            : new Texture()
     }
 }
